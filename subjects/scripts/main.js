@@ -17,15 +17,13 @@ function getRandomIndex(){
     var indexList = 0
     if (typeof DB_LIST === 'undefined'){
         console.log(DB_LIST_EXCLUDE);
-        DB_LIST = [];
+        DB_LIST = [[0, 0, 0]];
         for(var line = 0; line < DB_LIST_EXCLUDE.length; line++){
             for (var q = 1; q <= 80; q++){
                 flag = false;
-                console.log(line);
                 for (var values = 0; values < DB_LIST_EXCLUDE[line][2].length; values++){
                     if (q === DB_LIST_EXCLUDE[line][2][values]){
                         flag = true;
-                        console.log(q);
                         break;
                     }
                 }
@@ -35,7 +33,6 @@ function getRandomIndex(){
             }
         }
     }
-    console.log(DB_LIST)
     indexList = [...Array(DB_LIST.length - 1).keys()].map(i => ++i);;
     return shuffleAry(indexList);
 }
