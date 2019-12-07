@@ -33,6 +33,10 @@ function getRandomIndex(){
             }
         }
     }
+<<<<<<< HEAD
+=======
+    console.log(DB_LIST)
+>>>>>>> add 2016
     indexList = [...Array(DB_LIST.length - 1).keys()].map(i => ++i);;
     return shuffleAry(indexList);
 }
@@ -176,4 +180,8 @@ function makeLink(num){
 
         return url + year + season+ "/FIT"+ year + season +"A"+ question +".html";
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> add 2016
