@@ -16,7 +16,6 @@ function getRandomIndex(){
     randomIndex = 0;
     var indexList = 0
     if (typeof DB_LIST === 'undefined'){
-        console.log(DB_LIST_EXCLUDE);
         DB_LIST = [[0, 0, 0]];
         for(var line = 0; line < DB_LIST_EXCLUDE.length; line++){
             for (var q = 1; q <= 80; q++){
@@ -33,10 +32,6 @@ function getRandomIndex(){
             }
         }
     }
-<<<<<<< HEAD
-=======
-    console.log(DB_LIST)
->>>>>>> add 2016
     indexList = [...Array(DB_LIST.length - 1).keys()].map(i => ++i);;
     return shuffleAry(indexList);
 }
@@ -180,8 +175,4 @@ function makeLink(num){
 
         return url + year + season+ "/FIT"+ year + season +"A"+ question +".html";
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> add 2016
