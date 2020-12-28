@@ -231,7 +231,7 @@ body {
     -o-box-sizing: border-box;
 	-ms-box-sizing: border-box;
 	resize: none;
-	height: 200px;
+	height: 230px;
 }
 .form-v4-content .form-detail .form-row input:focus {
 	border: 1px solid #53c83c;
@@ -294,7 +294,6 @@ body {
 	background: #3786bd;
 	border-top-left-radius: 5px;
 	border-bottom-right-radius: 5px;
-	width: 130px;
 	border: none;
 	margin: 6px 0 50px 0px;
 	cursor: pointer;
@@ -310,6 +309,20 @@ body {
 }
 .form-v4-content .form-detail .form-row-last textarea {
 	padding: 12.5px;
+}
+
+.progress {
+    display: block;
+    text-align: center;
+    width: 0;
+    height: 3px;
+    background: #2f73a3;
+	transition: width .3s;
+	margin-bottom: 35px;
+}
+.progress.hide {
+    opacity: 0;
+    transition: opacity 1.3s;
 }
 
 /* Responsive */

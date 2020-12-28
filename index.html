@@ -29,24 +29,24 @@
 			<form class="form-detail" action="#" method="post" id="print" enctype="multipart/form-data">
 				<h2>PRINT FORM</h2>
 				<div class="form-row">
-					<label for="user">ユーザー名</label>
-					<input type="text" name="user" id="user" class="input-text">
+					<label for="user">ユーザー名*</label>
+					<input type="text" name="user" id="user" class="input-text" required>
                 </div>
                 <div class="form-row">
 					<label for="text">テキスト</label>
-                    <textarea name="text" id="text" cols="40" rows="5"></textarea>
+                    <textarea name="text" id="text" cols="40" rows="6"></textarea>
                 </div>
                 <br>
                 <div class="form-row">
 					<label for="image">画像</label>
 					<input type="file" name="image" id="image" class="input-text">
                 </div>
-                <p class="text-3" id="status"></p>
-                <br>
 				<div class="form-row-last">
-					<input type="submit" name="register" class="register" value="印刷">
-				</div>
-			</form>
+                    <input type="submit" name="register" class="register" value="印刷" style="margin-bottom: 30px;">
+                </div>
+                <p class="text-2" id="status" style="padding-top: 0px; margin-block-start: 0px; margin-block-end: 10px"></p>
+                <div class="progress"></div>
+            </form>
 		</div>
 	</div>
 	<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
@@ -91,15 +91,11 @@
         });
 
 
-        function sleep(ms) {
-            return new Promise(resolve => setTimeout(resolve, ms));
-        }
-        
-
         // Ajax
         $('#print').submit(function(event) {
             // 多重送信を防ぐため通信完了までボタンをdisableにする
             event.preventDefault();
+
             var $button = $('.register');
             $button.prop('disabled', true);
             $('#status').html('');
@@ -116,7 +112,7 @@
 
             if (image_ !== undefined){
                 var loaded_flag = false;
-                $button.val('画像変換中...');
+                $button.val('画像変換中');
 
                 if (!/\.(jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF)$/.test(image_.name) || !/(jpg|jpeg|png|gif)$/.test(image_.type)){
                     alert('JPG、GIF、PNGファイルの画像を添付してください。');
@@ -129,9 +125,10 @@
                     
                     var reader_ = new FileReader();
                     reader_.onload = function() {
-                        data.img =  reader_.result.replace(/data:.*\/.*;base64,/, '');;
+                        data.img =  reader_.result.split(',')[1];
                         start_ajax(data);
                     }
+                    
                     //Data URI Schemeを取得する 
                     reader_.readAsDataURL(image_);
                     return;
@@ -150,8 +147,16 @@
 
         function start_ajax(data){
             var $button = $('.register');
-            $button.val('印刷中...');
+            $('#user').prop('disabled', true);
+            $('#text').prop('disabled', true);
+            $('#image').prop('disabled', true);
+
+            $('.progress').css('width', '0%');
+            $('.progress').removeClass('hide');
+
+            $button.val('送信中 - 0%');
             var res_json = {'status' : 'error', 'msg-jp' : 'メンテナンス中です。しばらくお待ちください'};
+            $("#status").css('color', '#333');
 
             // 通信実行
             $.ajax({
@@ -162,6 +167,28 @@
                 dataType:       'json',
                 scriptCharset:  'utf-8',
                 crossDomain:    false,
+
+                xhr: function () {
+                    var xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener("progress", function (evt) {
+                        if (evt.lengthComputable) {
+                            var percentComplete = evt.loaded / evt.total;
+                            //console.log(percentComplete);
+                            $('.progress').css({
+                                width: percentComplete * 100 + '%'
+                            });
+                            var mb = 1024 ** 2;
+                            
+                            $('#status').html('<label>送信ステータス</label> '+ Math.round((evt.loaded / mb) * 100) / 100 +'MB / '+ Math.round((evt.total / mb) * 100) / 100 +'MB');
+                            $button.val('送信中 - '+ Math.round((percentComplete * 100)) +'%');
+                            if (percentComplete === 1) {
+                                $('.progress').addClass('hide');
+                                $button.val('印刷中...');
+                            }
+                        }
+                    }, false);
+                    return xhr;
+                },
 
                 // 成功時処理
                 success: function(json_data) {
@@ -188,6 +215,9 @@
                         $("#status").css('color', 'red');
                     }
 
+                    $('#user').prop('disabled', false);
+                    $('#text').prop('disabled', false);
+                    $('#image').prop('disabled', false);
                     $button.prop('disabled', false )  // ボタンを再び enableにする
                     $button.val('印刷');
                 }
